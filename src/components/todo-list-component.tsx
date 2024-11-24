@@ -1,17 +1,21 @@
-import AddItem from "./todo-list/add-item-bar";
-import ItemList from "./todo-list/item-list";
+import { useEffect, useState } from "react";
+import Trash from "../assets/Trash";
+import './style.css'
 
-const TodoListComponent = () => {
-  let todoList = [
-    'Practice TDD',
-    'Practice React',
-    'Practice TDD',
-    'Practice React'
-  ]
+interface itemCheckList {
+  id: number,
+  name: string,
+  checked: boolean,
+}
 
-  let checkedItems = [
-    'Practice TDD'
-  ]
+export default function TodoListComponent() {
+  const [todoList, setTodoList] = useState<itemCheckList[]>([]);
+  const [runningId, setrunningId] = useState(0);
+
+  useEffect(() => {
+  }, [])
+
+  const checkedItems = todoList.filter(item => item.checked);
 
   return <>
     <div className="border-2 p-5 self-center rounded-xl w-1/3 min-h-64">
@@ -19,8 +23,17 @@ const TodoListComponent = () => {
         <label className="font-bold">Todo List</label>
         <label>{itemRemaining()}</label>
       </div>
-      <AddItem />
-      <ItemList items={todoList} />
+      <AddItemBar
+        runningId={runningId}
+        setrunningId={setrunningId}
+        todoList={todoList}
+        setTodoList={setTodoList}
+      />
+      <ul className="Flex">
+        {todoList.map((item) => {
+        return <Item setTodoList={setTodoList} item={item} />;
+        })}
+      </ul>
     </div>
   </>;
 
@@ -29,5 +42,39 @@ const TodoListComponent = () => {
   }
 };
 
+function AddItemBar({ runningId, setrunningId, todoList, setTodoList }: any) {
+  function handleAddItem(e: any) {
+    e.preventDefault();
+    if (!e.target.todoInput.value) return;
+    setTodoList([...todoList, { id: runningId, name: e.target.todoInput.value, checked: false }]);
+    setrunningId(runningId + 1);
+  }
 
-export default TodoListComponent;
+  return (
+    <form onSubmit={handleAddItem}>
+      <div className="flex justify-between">
+        <input name="todoInput" className="m-1 px-2 border-2 border-grey-300 w-full rounded" type="text" />
+        <button className="m-1 px-3 py-2 bg-indigo-600 text-white text-sm rounded"
+          type="submit">
+          Add
+        </button>
+      </div>
+    </form>
+
+  );
+};
+
+
+function Item({ setTodoList, item }: { setTodoList: any, item: itemCheckList }) {
+  return (
+    <li className="Flex-item">
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-row">
+          <input className='mx-2' type="checkbox" onChange={() => { setTodoList((todoList: itemCheckList[]) => todoList.map(i => i.id === item.id ? { ...i, checked: !i.checked } : i)) }} />
+          <p className={item.checked ? "line-through text-gray-400" : ""}>{item.name}</p>
+        </div>
+        <Trash onClick={() => { setTodoList((todoList: itemCheckList[]) => todoList.filter(i => i.id !== item.id)) }} />
+      </div>
+    </li>
+  );
+}
