@@ -29,9 +29,9 @@ export default function TodoListComponent() {
         todoList={todoList}
         setTodoList={setTodoList}
       />
-      <ul className="Flex">
+      <ul className="TodoList">
         {todoList.map((item) => {
-        return <Item setTodoList={setTodoList} item={item} />;
+          return <Item key={item.id} todoList={todoList} setTodoList={setTodoList} item={item} />;
         })}
       </ul>
     </div>
@@ -65,15 +65,26 @@ function AddItemBar({ runningId, setrunningId, todoList, setTodoList }: any) {
 };
 
 
-function Item({ setTodoList, item }: { setTodoList: any, item: itemCheckList }) {
+function Item({ todoList, setTodoList, item }: { todoList: itemCheckList[], setTodoList: any, item: itemCheckList }) {
   return (
-    <li className="Flex-item">
+    <li className="Todo-item">
       <div className="flex flex-row justify-between">
         <div className="flex flex-row">
-          <input className='mx-2' type="checkbox" onChange={() => { setTodoList((todoList: itemCheckList[]) => todoList.map(i => i.id === item.id ? { ...i, checked: !i.checked } : i)) }} />
+          <input
+            className="mx-2"
+            type="checkbox"
+            checked={item.checked}
+            onChange={() =>
+              setTodoList((todoList: itemCheckList[]) =>
+                todoList.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i))
+              )
+            }
+          />
           <p className={item.checked ? "line-through text-gray-400" : ""}>{item.name}</p>
         </div>
-        <Trash onClick={() => { setTodoList((todoList: itemCheckList[]) => todoList.filter(i => i.id !== item.id)) }} />
+        <Trash
+          onClick={() => setTodoList(todoList.filter((i) => i.id !== item.id))}
+        />
       </div>
     </li>
   );

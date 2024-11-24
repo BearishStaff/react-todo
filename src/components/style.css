@@ -1,4 +1,4 @@
-.Flex {
+.TodoList {
     display: flex;
     flex-flow: column wrap;
     justify-content: space-between;
@@ -7,12 +7,14 @@
     padding: 0;
 }
 
-.Flex-item {
+.Todo-item {
     flex: 1 1 auto;
     position: relative;
     line-height: 40px;
+    min-height: 40px;
+    align-content: center;
 }
 
-.Flex-item + .Flex-item {
+.Todo-item + .Todo-item {
     border-top: solid 1px lightgray;
 }
